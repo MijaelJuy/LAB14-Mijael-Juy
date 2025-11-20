@@ -1,4 +1,3 @@
-@"
 # Usar la imagen oficial de .NET 9 SDK para construir la app
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /source
@@ -21,12 +20,3 @@ EXPOSE 8080
 
 # Comando para iniciar la app
 ENTRYPOINT ["dotnet", "LAB14-Mijael_Juy.dll"]
-"@ | Out-File -FilePath Dockerfile -Encoding UTF8
-```
-
-Una vez que ejecutes eso, no olvides subirlo a GitHub con estos tres comandos para que Render pueda encontrarlo:
-
-```powershell
-git add .
-git commit -m "Agregando Dockerfile"
-git push
