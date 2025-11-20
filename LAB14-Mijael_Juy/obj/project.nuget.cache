@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "QYQHM9le7DU=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Acer Predator\\RiderProjects\\LAB14-Mijael_Juy\\LAB14-Mijael_Juy\\LAB14-Mijael_Juy.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Acer Predator\\.nuget\\packages\\microsoft.aspnetcore.openapi\\9.0.11\\microsoft.aspnetcore.openapi.9.0.11.nupkg.sha512",
+    "C:\\Users\\Acer Predator\\.nuget\\packages\\microsoft.openapi\\1.6.17\\microsoft.openapi.1.6.17.nupkg.sha512"
+  ],
+  "logs": []
+}

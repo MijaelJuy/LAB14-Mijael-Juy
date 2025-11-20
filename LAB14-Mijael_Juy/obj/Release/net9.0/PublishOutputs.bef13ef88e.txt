@@ -1,0 +1,9 @@
+C:\Users\Acer Predator\Documents\LAB14_Final\LAB14-Mijael_Juy.exe
+C:\Users\Acer Predator\Documents\LAB14_Final\appsettings.Development.json
+C:\Users\Acer Predator\Documents\LAB14_Final\appsettings.json
+C:\Users\Acer Predator\Documents\LAB14_Final\LAB14-Mijael_Juy.dll
+C:\Users\Acer Predator\Documents\LAB14_Final\LAB14-Mijael_Juy.deps.json
+C:\Users\Acer Predator\Documents\LAB14_Final\LAB14-Mijael_Juy.runtimeconfig.json
+C:\Users\Acer Predator\Documents\LAB14_Final\LAB14-Mijael_Juy.pdb
+C:\Users\Acer Predator\Documents\LAB14_Final\Microsoft.AspNetCore.OpenApi.dll
+C:\Users\Acer Predator\Documents\LAB14_Final\Microsoft.OpenApi.dll
