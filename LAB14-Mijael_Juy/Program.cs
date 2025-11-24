@@ -7,24 +7,21 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // 2. Base de Datos en Memoria
+// Usamos "TodoList" como nombre temporal para la base de datos en RAM
 builder.Services.AddDbContext<TodoDb>(opt => opt.UseInMemoryDatabase("TodoList"));
-
-// builder.Services.AddDatabaseDeveloperPageExceptionFilter(); 
 
 var app = builder.Build();
 
-// 3. Activar Swagger
+// 3. Activar Swagger SIEMPRE
+// Lo dejamos fuera del "if (Development)" para que funcione en Render (producción)
 app.UseSwagger();
-app.UseSwaggerUI(c =>
-{
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Mi API V1");
-    c.RoutePrefix = "swagger"; // Esto asegura que la ruta sea /swagger
-});
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 
 // --- ENDPOINTS ---
 
+// Endpoint Clima (Original)
 app.MapGet("/weatherforecast", () =>
 {
     var summaries = new[] { "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching" };
@@ -40,11 +37,17 @@ app.MapGet("/weatherforecast", () =>
 })
 .WithName("GetWeatherForecast");
 
-// Endpoints
-app.MapGet("/todoitems", async (TodoDb db) => await db.Todos.ToListAsync());
+// --- ENDPOINTS DE TAREAS (NUEVO - Base de Datos) ---
 
-app.MapGet("/todoitems/complete", async (TodoDb db) => await db.Todos.Where(t => t.IsComplete).ToListAsync());
+// GET: Obtener todas las tareas
+app.MapGet("/todoitems", async (TodoDb db) => 
+    await db.Todos.ToListAsync());
 
+// GET: Obtener solo las tareas completadas
+app.MapGet("/todoitems/complete", async (TodoDb db) => 
+    await db.Todos.Where(t => t.IsComplete).ToListAsync());
+
+// POST: Crear una nueva tarea
 app.MapPost("/todoitems", async (Todo todo, TodoDb db) =>
 {
     db.Todos.Add(todo);
@@ -52,14 +55,52 @@ app.MapPost("/todoitems", async (Todo todo, TodoDb db) =>
     return Results.Created($"/todoitems/{todo.Id}", todo);
 });
 
+// GET: Obtener una tarea por ID
+app.MapGet("/todoitems/{id}", async (int id, TodoDb db) =>
+    await db.Todos.FindAsync(id)
+        is Todo todo
+            ? Results.Ok(todo)
+            : Results.NotFound());
+
+// PUT: Actualizar una tarea existente
+app.MapPut("/todoitems/{id}", async (int id, Todo inputTodo, TodoDb db) =>
+{
+    var todo = await db.Todos.FindAsync(id);
+
+    if (todo is null) return Results.NotFound();
+
+    todo.Name = inputTodo.Name;
+    todo.IsComplete = inputTodo.IsComplete;
+
+    await db.SaveChangesAsync();
+
+    return Results.NoContent();
+});
+
+// DELETE: Borrar una tarea
+app.MapDelete("/todoitems/{id}", async (int id, TodoDb db) =>
+{
+    if (await db.Todos.FindAsync(id) is Todo todo)
+    {
+        db.Todos.Remove(todo);
+        await db.SaveChangesAsync();
+        return Results.NoContent();
+    }
+
+    return Results.NotFound();
+});
+
 app.Run();
 
-// --- MODELOS ---
+// --- MODELOS Y CONTEXTO DE DATOS ---
+
+// Modelo del Clima
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
 {
     public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
 }
 
+// Modelo de Tarea (Todo)
 class Todo
 {
     public int Id { get; set; }
@@ -67,6 +108,7 @@ class Todo
     public bool IsComplete { get; set; }
 }
 
+// Contexto de la Base de Datos
 class TodoDb : DbContext
 {
     public TodoDb(DbContextOptions<TodoDb> options) : base(options) { }
