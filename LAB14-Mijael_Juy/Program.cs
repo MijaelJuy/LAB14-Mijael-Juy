@@ -7,19 +7,17 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // 2. Configurar la Base de Datos en Memoria
-// "TodoList" es el nombre temporal de la base de datos
 builder.Services.AddDbContext<TodoDb>(opt => opt.UseInMemoryDatabase("TodoList"));
 
 var app = builder.Build();
 
-// 3. Activar Swagger SIEMPRE
-// Lo sacamos del "if (Development)" para que funcione en Render
+// 3. Activar Swagger SIEMPRE (incluso en producción para Render)
 app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 
-// --- ENDPOINTS DE CLIMA (Original) ---
+// --- ENDPOINTS DE CLIMA ---
 app.MapGet("/weatherforecast", () =>
 {
     var summaries = new[] { "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching" };
@@ -33,8 +31,8 @@ app.MapGet("/weatherforecast", () =>
         .ToArray();
     return forecast;
 })
-.WithName("GetWeatherForecast");
-// NOTA: Aquí quitamos .WithOpenApi() para evitar el error 500
+.WithName("GetWeatherForecast"); 
+// NOTA: Aquí YA NO ESTÁ ".WithOpenApi()" para evitar el error 500
 
 // --- ENDPOINTS DE TAREAS (Base de Datos) ---
 
@@ -42,7 +40,7 @@ app.MapGet("/weatherforecast", () =>
 app.MapGet("/todoitems", async (TodoDb db) => 
     await db.Todos.ToListAsync());
 
-// GET: Ver solo tareas completadas
+// GET: Ver tareas completadas
 app.MapGet("/todoitems/complete", async (TodoDb db) => 
     await db.Todos.Where(t => t.IsComplete).ToListAsync());
 
@@ -54,7 +52,7 @@ app.MapPost("/todoitems", async (Todo todo, TodoDb db) =>
     return Results.Created($"/todoitems/{todo.Id}", todo);
 });
 
-// GET: Ver una tarea por ID
+// GET: Ver tarea por ID
 app.MapGet("/todoitems/{id}", async (int id, TodoDb db) =>
     await db.Todos.FindAsync(id)
         is Todo todo
@@ -65,14 +63,11 @@ app.MapGet("/todoitems/{id}", async (int id, TodoDb db) =>
 app.MapPut("/todoitems/{id}", async (int id, Todo inputTodo, TodoDb db) =>
 {
     var todo = await db.Todos.FindAsync(id);
-
     if (todo is null) return Results.NotFound();
 
     todo.Name = inputTodo.Name;
     todo.IsComplete = inputTodo.IsComplete;
-
     await db.SaveChangesAsync();
-
     return Results.NoContent();
 });
 
@@ -85,13 +80,12 @@ app.MapDelete("/todoitems/{id}", async (int id, TodoDb db) =>
         await db.SaveChangesAsync();
         return Results.NoContent();
     }
-
     return Results.NotFound();
 });
 
 app.Run();
 
-// --- MODELOS DE DATOS ---
+// --- MODELOS ---
 
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
 {
