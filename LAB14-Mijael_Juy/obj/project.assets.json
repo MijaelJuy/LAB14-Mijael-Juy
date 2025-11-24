@@ -1120,6 +1120,7 @@
       "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore >= 9.0.0",
       "Microsoft.EntityFrameworkCore >= 9.0.0",
       "Microsoft.EntityFrameworkCore.InMemory >= 9.0.0",
+      "Microsoft.OpenApi >= 1.6.14",
       "Swashbuckle.AspNetCore >= 6.6.2"
     ]
   },
@@ -1177,6 +1178,10 @@
           "Microsoft.EntityFrameworkCore.InMemory": {
             "target": "Package",
             "version": "[9.0.0, )"
+          },
+          "Microsoft.OpenApi": {
+            "target": "Package",
+            "version": "[1.6.14, )"
           },
           "Swashbuckle.AspNetCore": {
             "target": "Package",
