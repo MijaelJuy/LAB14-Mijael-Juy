@@ -20,3 +20,7 @@ EXPOSE 8080
 
 # Comando para iniciar la app
 ENTRYPOINT ["dotnet", "LAB14-Mijael_Juy.dll"]
+
+# Ruta del archivo 
+# donde esta tu dockerfile
+# cofigura tu docker para render
