@@ -2,33 +2,32 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 1. Configurar Swagger (OpenAPI)
-// Esto permite generar la documentación visual de tu API
+// 1. Configurar Swagger (Swashbuckle)
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// 2. Configurar Base de Datos en Memoria
-// Usamos "InMemory" para no complicarnos instalando SQL Server por ahora.
+// 2. Base de Datos en Memoria
 builder.Services.AddDbContext<TodoDb>(opt => opt.UseInMemoryDatabase("TodoList"));
-builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+// builder.Services.AddDatabaseDeveloperPageExceptionFilter(); 
 
 var app = builder.Build();
 
 // 3. Activar Swagger
-// Lo dejamos fuera del "if (Development)" para que puedas verlo también en Render
 app.UseSwagger();
-app.UseSwaggerUI();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Mi API V1");
+    c.RoutePrefix = "swagger"; // Esto asegura que la ruta sea /swagger
+});
 
 app.UseHttpsRedirection();
 
-// --- TUS ENDPOINTS ORIGINALES (CLIMA) ---
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+// --- ENDPOINTS ---
 
 app.MapGet("/weatherforecast", () =>
 {
+    var summaries = new[] { "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching" };
     var forecast = Enumerable.Range(1, 5).Select(index =>
         new WeatherForecast
         (
@@ -39,20 +38,13 @@ app.MapGet("/weatherforecast", () =>
         .ToArray();
     return forecast;
 })
-.WithName("GetWeatherForecast")
-.WithOpenApi();
+.WithName("GetWeatherForecast");
 
-// --- NUEVOS ENDPOINTS CON BASE DE DATOS (TAREAS) ---
+// Endpoints
+app.MapGet("/todoitems", async (TodoDb db) => await db.Todos.ToListAsync());
 
-// Obtener todas las tareas
-app.MapGet("/todoitems", async (TodoDb db) =>
-    await db.Todos.ToListAsync());
+app.MapGet("/todoitems/complete", async (TodoDb db) => await db.Todos.Where(t => t.IsComplete).ToListAsync());
 
-// Obtener tareas completadas
-app.MapGet("/todoitems/complete", async (TodoDb db) =>
-    await db.Todos.Where(t => t.IsComplete).ToListAsync());
-
-// Crear una nueva tarea
 app.MapPost("/todoitems", async (Todo todo, TodoDb db) =>
 {
     db.Todos.Add(todo);
@@ -62,15 +54,12 @@ app.MapPost("/todoitems", async (Todo todo, TodoDb db) =>
 
 app.Run();
 
-// --- MODELOS Y CLASES ---
-
-// Tu modelo original del clima
+// --- MODELOS ---
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
 {
     public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
 }
 
-// Nuevo modelo para la Base de Datos (Tarea)
 class Todo
 {
     public int Id { get; set; }
@@ -78,11 +67,8 @@ class Todo
     public bool IsComplete { get; set; }
 }
 
-// Contexto de la Base de Datos
 class TodoDb : DbContext
 {
-    public TodoDb(DbContextOptions<TodoDb> options)
-        : base(options) { }
-
+    public TodoDb(DbContextOptions<TodoDb> options) : base(options) { }
     public DbSet<Todo> Todos => Set<Todo>();
 }
