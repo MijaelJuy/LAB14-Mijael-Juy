@@ -16,7 +16,6 @@ C:\Users\Acer Predator\RiderProjects\LAB14-Mijael_Juy\LAB14-Mijael_Juy\bin\Debug
 C:\Users\Acer Predator\RiderProjects\LAB14-Mijael_Juy\LAB14-Mijael_Juy\bin\Debug\net9.0\LAB14-Mijael_Juy.dll
 C:\Users\Acer Predator\RiderProjects\LAB14-Mijael_Juy\LAB14-Mijael_Juy\bin\Debug\net9.0\LAB14-Mijael_Juy.pdb
 C:\Users\Acer Predator\RiderProjects\LAB14-Mijael_Juy\LAB14-Mijael_Juy\bin\Debug\net9.0\Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore.dll
-C:\Users\Acer Predator\RiderProjects\LAB14-Mijael_Juy\LAB14-Mijael_Juy\bin\Debug\net9.0\Microsoft.AspNetCore.OpenApi.dll
 C:\Users\Acer Predator\RiderProjects\LAB14-Mijael_Juy\LAB14-Mijael_Juy\bin\Debug\net9.0\Microsoft.EntityFrameworkCore.dll
 C:\Users\Acer Predator\RiderProjects\LAB14-Mijael_Juy\LAB14-Mijael_Juy\bin\Debug\net9.0\Microsoft.EntityFrameworkCore.Abstractions.dll
 C:\Users\Acer Predator\RiderProjects\LAB14-Mijael_Juy\LAB14-Mijael_Juy\bin\Debug\net9.0\Microsoft.EntityFrameworkCore.InMemory.dll
